@@ -14,10 +14,16 @@ class BasicBot():
 		this.OWNER = owner
 		this.sock = socket.socket()
 
+	def connect(this):
+		this.sock.connect((this.HOST, this.PORT))
+		this.sock.send('NICK ' + this.NICK + '\n')
+		this.sock.send('USER ' + this.IDENT + ' ' + this.HOST + ' bla :' + this.REALNAME + '\n')
+
 	def message(this, target, msg):
 		this.sock.send('PRIVMSG ' + target + " :" + msg + '\n')
 
 	def join(this, channel):
+		print 'Joining: ' + channel
 		this.sock.send('JOIN ' + channel + '\n')
 
 	def parseUser(this, msg):
@@ -52,6 +58,14 @@ class BasicBot():
 		msg = msg.split()
 		this.sock.send("PONG "+msg[1]+"\n")
 
+	def basic_message_handle(this, msg):
+		if msg.find("Welcome") != -1:
+			this.join(this.CHANNEL_LIST)
+		elif msg.find("PRIVMSG") != -1:
+			this.parsemsg(msg)
+		elif msg.find('PING') != -1:
+			this.pingPong(msg)
+
 	def run(this):
 		this.sock.connect((this.HOST, this.PORT))
 		this.sock.send('NICK ' + this.NICK + '\n')
@@ -61,9 +75,4 @@ class BasicBot():
 			line = this.sock.recv(500)
 			if len(line) > 0:
 				print line
-			if line.find("Welcome") != -1:
-				this.join(this.CHANNEL_LIST)
-			elif line.find("PRIVMSG") != -1:
-				this.parsemsg(line)
-			elif line.find('PING') != -1:
-				this.pingPong(line)
+			this.basic_message_handle(line)
