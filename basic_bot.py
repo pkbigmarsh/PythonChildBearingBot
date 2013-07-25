@@ -3,15 +3,15 @@ import socket
 import string
 import os
 
-class bot_child():
-	def __init__(this, host, nick, ident, realname, channel):
+class BasicBot():
+	def __init__(this, host, nick, owner, channel_list):
 		this.HOST = host
 		this.NICK = nick
-		this.IDENT = ident
-		this.REALNAME = realname
-		this.CHANNEL_LIST = channel
+		this.IDENT = nick
+		this.REALNAME = nick
+		this.CHANNEL_LIST = channel_list
 		this.PORT = 6667
-		this.OWNER = 'msumwalt'
+		this.OWNER = owner
 		this.sock = socket.socket()
 
 	def message(this, target, msg):
@@ -46,13 +46,6 @@ class bot_child():
 		print 'The sender is ' + sender_nick
 		print 'From sender: ' + sender
 		print 'With the message of:' + message
-		if message.find('PythonBot2000') != -1 and sender_nick != 'InternBot':
-			response = "Hello " + sender_nick + '!! You are kind, ' + sender_nick + '++'
-			this.message(sender, response)
-		if message.find('Create bot ') != -1:
-			cmd = 'Create bot '
-			bot_name = message[message.find(cmd) + len(cmd):].split()[0]
-			this.message(sender, 'New Bot: ' + bot_name)
 
 	def pingPong(this, msg):
 		msg = msg.rstrip()
@@ -68,7 +61,7 @@ class bot_child():
 			line = this.sock.recv(500)
 			if len(line) > 0:
 				print line
-			if line.find("Welcome to the Lexmark-Lpdev") != -1:
+			if line.find("Welcome") != -1:
 				this.join(this.CHANNEL_LIST)
 			elif line.find("PRIVMSG") != -1:
 				this.parsemsg(line)

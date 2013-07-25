@@ -3,22 +3,20 @@ import socket
 import string
 import os
 
-from BotChild import *
+from basic_bot import *
+from child_bearer_bot import *
 
 
-HOST='colorscience.lpdev.prtdev.lexmark.com'
+HOST='irc.accessirc.net'
 PORT=6667
-NICK='PythonBot2221'
-IDENT='P'
-REALNAME='Marshall'
-OWENER='msumwalt'
-CHANNELINIT='#msumwaltTest'
+NICK='ChildBearingBot'
+IDENT='ChildBearingBot'
+REALNAME='ChildBearingBot'
+OWNER='msumwalt'
+CHANNELINIT='#BotTesting'
 readbuffer=''
 
 botChildren = []
 
-PythonBot = bot_child(HOST, NICK, IDENT, REALNAME, CHANNELINIT)
+PythonBot = ChildBearer(HOST, NICK, OWNER, CHANNELINIT)
 PythonBot.run()
-
-Bot2 = bot_child(HOST, 'Bot22', 'MBOT', 'MBOT2', 'MarshallS', CHANNELINIT)
-Bot2.run()
