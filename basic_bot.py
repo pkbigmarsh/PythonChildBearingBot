@@ -4,20 +4,21 @@ import string
 import os
 
 class BasicBot():
-	def __init__(this, host, nick, owner, channel_list):
+	def __init__(this, host, nick, channel_list):
 		this.HOST = host
 		this.NICK = nick
 		this.IDENT = nick
 		this.REALNAME = nick
 		this.CHANNEL_LIST = channel_list
 		this.PORT = 6667
-		this.OWNER = owner
 		this.sock = socket.socket()
+		this.isConnected = False
 
 	def connect(this):
 		this.sock.connect((this.HOST, this.PORT))
 		this.sock.send('NICK ' + this.NICK + '\n')
 		this.sock.send('USER ' + this.IDENT + ' ' + this.HOST + ' bla :' + this.REALNAME + '\n')
+		this.isConnected = True
 
 	def message(this, target, msg):
 		this.sock.send('PRIVMSG ' + target + " :" + msg + '\n')
