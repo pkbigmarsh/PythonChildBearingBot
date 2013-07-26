@@ -2,12 +2,16 @@ from basic_bot import *
 from child_bot import *
 import socket
 import select
+from threading import Timer
 
 class ChildBearer(BasicBot):
 	def __init__(this, host, nick, channel_list):
 		BasicBot.__init__(this, host, nick, channel_list)
 		this.children = []
 		this.sockets = [this.sock]
+		this.isAbleToBear = False;
+		this.childTimer = Timer(10, this.update_child_bearing)
+		this.childTimer.start()
 
 	def create_bot(this, msg):
 		print '!! --- Creating Child --- !!'
@@ -24,8 +28,19 @@ class ChildBearer(BasicBot):
 			child_bot.connect();
 
 	def handle_messages(this, msg):
-		if 'child' in msg:
+		if 'child' in msg and this.isAbleToBear == True:
 			this.create_bot(msg)
+			this.isAbleToBear = False
+			this.childTimer = Timer(10, this.update_child_bearing)
+			this.childTimer.start()
+		elif 'child' in msg and this.isAbleToBear == False:
+			user = this.parseUser(msg)
+			target, message = this.parsePRIVMSG(msg)
+			this.message(target, user + ' you can\'t have a child');
+
+	def update_child_bearing(this):
+		this.isAbleToBear = True
+		this.childTimer.cancel()
 
 	def run(this):
 		this.sock.connect((this.HOST, this.PORT))
