@@ -17,32 +17,33 @@ class ChildBot(BasicBot):
 		random.seed()
 
 	def beat_heart(this):
-		print this.NICK + ' - heartbeat'
-		choice = random.randint(0,2)
-		if choice == 0:
-			this.hunger += 1
-		elif choice == 1:
-			this.thirst += 1
-		elif choice == 2:
-			this.love += 1
+		if this.isAlive:
+			print this.NICK + ' - heartbeat'
+			choice = random.randint(0,2)
+			if choice == 0:
+				this.hunger += 1
+			elif choice == 1:
+				this.thirst += 1
+			elif choice == 2:
+				this.love += 1
 
-		if this.hunger > this.max_ignore:
-			this.death_by_hunger()
-		elif this.thirst > this.max_ignore:
-			this.death_by_thirst()
-		elif this.love > this.max_ignore:
-			this.death_by_love()
-		else:
-			if this.hunger > this.thirst and this.hunger > this.love:
-				this.hunger_message()
-			elif this.thirst > this.hunger and this.thirst > this.love:
-				this.thirst_message()
-			elif this.love > this.hunger and this.love > this.thirst:
-				this.love_message()
+			if this.hunger > this.max_ignore:
+				this.death_by_hunger()
+			elif this.thirst > this.max_ignore:
+				this.death_by_thirst()
+			elif this.love > this.max_ignore:
+				this.death_by_love()
 			else:
-				this.random_message()
-		this.heartbeat = Timer(5, this.beat_heart)
-		this.heartbeat.start()
+				if this.hunger > this.thirst and this.hunger > this.love:
+					this.hunger_message()
+				elif this.thirst > this.hunger and this.thirst > this.love:
+					this.thirst_message()
+				elif this.love > this.hunger and this.love > this.thirst:
+					this.love_message()
+				else:
+					this.random_message()
+			this.heartbeat = Timer(5, this.beat_heart)
+			this.heartbeat.start()
 
 	def random_message(this):
 		choice = random.randint(0,2)
@@ -97,7 +98,6 @@ class ChildBot(BasicBot):
 			this.message(this.CHANNEL_LIST, 'Love me mommy...')
 
 	def disconnect(this):
-		this.sock.close()
 		this.heartbeat.cancel()
 		this.isAlive = False
 

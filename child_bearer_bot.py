@@ -53,7 +53,9 @@ class ChildBearer(BasicBot):
 
 	def remove_child(this, child_pos):
 		dead_child = this.children.pop(child_pos)
-		this.sockets.pop(child_pos)
+		dead_socket = this.sockets.pop(child_pos + 1)
+		dead_socket.shutdown(socket.SHUT_RDWR)
+		dead_socket.close()
 
 	def run(this):
 		this.sock.connect((this.HOST, this.PORT))
